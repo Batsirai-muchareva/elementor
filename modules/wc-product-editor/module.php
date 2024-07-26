@@ -55,19 +55,13 @@ class Module extends BaseModule {
 		$path_pieces = explode( '/', $path );
 		$route       = $path_pieces[1];
 
-		return 'product' === $route;
+		return 'add-product' === $route || 'product' === $route;
 	}
 
 	public function print_button_js_template() {
-		$post_id = $this->get_post_id();
-		$document = Plugin::$instance->documents->get( $post_id );
-
-		if ( ! $document ) {
-			return;
-		}
 		?>
 		<script id="elementor-woocommerce-new-editor-button" type="text/html">
-			<a id="elementor-go-to-edit-page-link" class="elementor-wc-button-wrapper" href="<?php echo esc_url( $document->get_edit_url() ); ?>">
+			<a id="elementor-go-to-edit-page-link" class="elementor-wc-button-wrapper">
 				<div id="elementor-editor-button" class="button button-primary button-large">
 					<i class="eicon-elementor-square" aria-hidden="true"></i>
 					<?php echo esc_html__( 'Edit with Elementor', 'elementor' ); ?>
@@ -86,16 +80,5 @@ class Module extends BaseModule {
 			</a>
 		</script>
 		<?php
-	}
-
-	private function get_post_id() {
-		if ( Utils::get_super_global_value( $_GET, 'path' ) === null ) {
-			return false;
-		}
-
-		$path_query = Utils::get_super_global_value( $_GET, 'path' );
-		$query_string = isset( $path_query ) ? explode( '/', $path_query ) : [];
-
-		return (int) end( $query_string );
 	}
 }

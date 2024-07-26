@@ -15,6 +15,18 @@
 			};
 		},
 
+		getDirtyRecords() {
+			return wp.data.select( 'core' ).__experimentalGetDirtyEntityRecords();
+		},
+
+		getEditedEntityRecordId() {
+			const dirtyRecords = this.getDirtyRecords();
+
+			const productDirtyRecord = dirtyRecords.find( ( record ) => 'postType' === record.kind && 'product' === record.name );
+
+			return productDirtyRecord.key;
+		},
+
 		wcNewProductEditorSwitchButton() {
 			const body = document.querySelector( this.selectors.body ),
 				that = this;
@@ -49,10 +61,20 @@
 					tempDiv = document.createElement( 'div' );
 				tempDiv.innerHTML = buttonTemplate.innerHTML;
 
-				const button = tempDiv.firstElementChild;
+				const button = tempDiv.firstElementChild,
+					postId = this.getEditedEntityRecordId();
+
+				button.href = this.getElementorPostEditURL( postId );
 
 				wcProductHeaderInner.firstChild.append( button );
 			}
+		},
+
+		getElementorPostEditURL( postId ) {
+			return wp.url.addQueryArgs( `${ elementorAppConfig.admin_url }/post.php`, {
+				post: postId,
+				action: 'elementor',
+			} );
 		},
 
 		isWcProductEditorLoading() {
