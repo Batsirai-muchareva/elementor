@@ -1,15 +1,29 @@
 name: Automated Latest Release
-
-env:
-  CHANNEL: 'latest'
-  PRERELEASE: 'false'
+#
+#env:
+#  CHANNEL: 'latest'
+#  PRERELEASE: 'false'
 
 on:
   workflow_dispatch:
-  pull_request_target:
-    types: [closed]
-    branches:
-      - main
+    inputs:
+      channel:
+        required: true
+        type: choice
+        description: Select a channel. For cloud, use main branch only!
+        options:
+          - ga
+          - beta
+          - cloud
+      PRERELEASE:
+        type: boolean
+        description: 'Pre-release?'
+        required: false
+
+env:
+  CHANNEL: ${{inputs.channel}}
+  PRERELEASE: 'false'
+
 
 permissions:
   contents: write
@@ -58,14 +72,14 @@ jobs:
           REF: ${{ github.ref }}
           POSTFIX: ${{ steps.set_postfix_value.outputs.postfix }}
 
-      - name: Bump Channel Version
-        id: bump_channel_version
-        uses: ./.github/workflows/bump-channel-version
-        with:
-          CLEAN_PACKAGE_VERSION: ${{ env.CLEAN_PACKAGE_VERSION }}
-          CHANNEL: ${{ env.CHANNEL }}
-          POSTFIX: ${{ steps.set_postfix_value.outputs.postfix }}
-          OVERRIDE_PACKAGE_VERSION: true
+#      - name: Bump Channel Version
+#        id: bump_channel_version
+#        uses: ./.github/workflows/bump-channel-version
+#        with:
+#          CLEAN_PACKAGE_VERSION: ${{ env.CLEAN_PACKAGE_VERSION }}
+#          CHANNEL: ${{ env.CHANNEL }}
+#          POSTFIX: ${{ steps.set_postfix_value.outputs.postfix }}
+#          OVERRIDE_PACKAGE_VERSION: true
 
       - name: Install Dependencies
         run: npm ci
