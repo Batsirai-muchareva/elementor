@@ -75,7 +75,7 @@ runs:
         echo "PLUGIN_FILENAME=${PLUGIN_FILENAME}" >> $GITHUB_OUTPUT
 
     - name: Upload Build Zip Artifact
-      uses: actions/upload-artifact@v4 
+      uses: actions/upload-artifact@v4
       with:
         name: ${{ steps.build_plugin.outputs.PLUGIN_FILENAME }}
         path: ${{ env.REPOSITORY_NAME }}
