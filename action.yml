@@ -92,9 +92,11 @@ runs:
       run: |
         ELEMENTOR_CORE_BRANCH="${{ inputs.ELEMENTOR_PRO_CORE_BRANCH }}"
         ROOT_DIR=$(pwd)
+        ls -al
 
         rm -rf ../elementor
         echo "Cloning ELEMENTOR_CORE_BRANCH: ${ELEMENTOR_CORE_BRANCH}"
+        ls -al
 
         # Cloning the core plugin into the elementor folder outside elementor-pro folder
         git clone --single-branch --branch ${ELEMENTOR_CORE_BRANCH} https://github.com/elementor/elementor.git ../elementor
@@ -107,6 +109,7 @@ runs:
         composer install --optimize-autoloader --prefer-dist
         composer install --no-scripts --no-dev
         composer dump-autoload
+        ls -al
 
         # Build the core plugin
         # When the 'npx grunt build' is done running it creates a build folder in the elementor folder
@@ -115,10 +118,17 @@ runs:
 
         CORE_PACKAGE_VERSION=$(node -p "require('./package.json').version")
         echo "CORE_PACKAGE_VERSION=${CORE_PACKAGE_VERSION}" >> $GITHUB_ENV
+        ls -al
 
+        cd /tmp/elementor-builds/
+        ls -al
+        mv ./${{ env.CORE_PACKAGE_VERSION }} ./elementor
+        ls -al
+        zip -r elementor.zip ./elementor
+        ls -al
         cd $ROOT_DIR
 
-        zip -r elementor.zip /tmp/elementor-builds/${{ env.CORE_PACKAGE_VERSION }}
+        ls -al
         mv /tmp/elementor-builds/elementor.zip ./elementor.zip
 
     - name: Build Plugin
