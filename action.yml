@@ -144,6 +144,7 @@ runs:
 
         elif [ "${{ env.REPOSITORY_NAME }}" == "elementor-pro" ]; then
           ls -al
+          ROOT_DIR=$(pwd)
 
           PLUGIN_FILENAME="elementor-pro-${{ env.BUILD_PACKAGE_VERSION }}"
           PLUGIN_ZIP_FILENAME="${PLUGIN_FILENAME}.zip"
@@ -174,10 +175,13 @@ runs:
 
           # Remove the zip file from the root folder
           rm ${PLUGIN_ZIP_PATH}
-
+          ls -al
           cd /tmp/
           zip -r -q ${PLUGIN_ZIP_PATH} ./elementor-pro
           echo "zip"
+
+          ls -al $ROOT_DIR
+          cd $ROOT_DIR
           ls -al
 
           echo "PLUGIN_ZIP_FILENAME=${PLUGIN_ZIP_FILENAME}" >> $GITHUB_ENV
