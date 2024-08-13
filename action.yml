@@ -132,8 +132,6 @@ runs:
         export PUPPETEER_SKIP_DOWNLOAD=true
 
         npx grunt build
-        echo ${{ env.REPOSITORY_NAME }}
-        ls -al
 
         if [ "${{ env.REPOSITORY_NAME }}" == "elementor" ]; then
 
@@ -145,6 +143,7 @@ runs:
 
         elif [ "${{ env.REPOSITORY_NAME }}" == "elementor-pro" ]; then
           ls -al
+          echo ${{ env.BUILD_PACKAGE_VERSION }}"
 
           PLUGIN_FILENAME="elementor-pro-${{ env.BUILD_PACKAGE_VERSION }}"
           PLUGIN_ZIP_FILENAME="${PLUGIN_FILENAME}.zip"
@@ -152,6 +151,12 @@ runs:
           PACKAGE_BASE_DIR="/tmp/elementor-pro-releases/"
           PACKAGE_PATH=$(ls $PACKAGE_BASE_DIR)
           PLUGIN_ZIP_PATH=$(pwd)/${PLUGIN_ZIP_FILENAME}
+
+          echo $PLUGIN_FILENAME
+          echo $PLUGIN_ZIP_FILENAME
+          echo $PACKAGE_BASE_DIR
+          echo $PACKAGE_PATH
+          echo $PLUGIN_ZIP_PATH
 
           # When the 'npx grunt build' is done running in PRO it creates a zip build file in
           # /tmp/elementor-pro-releases folder named elementor-pro-{PACKAGE_VERSION}.zip
