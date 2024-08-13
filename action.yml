@@ -159,6 +159,8 @@ runs:
           echo "${PACKAGE_PATH}"
           echo "${PLUGIN_ZIP_PATH}"
 
+          ls -al /tmp/elementor-pro-releases/
+
           # When the 'npx grunt build' is done running in PRO it creates a zip build file in
           # /tmp/elementor-pro-releases folder named elementor-pro-{PACKAGE_VERSION}.zip
           # So we move the zip generated to the root folder of the repository
@@ -176,12 +178,14 @@ runs:
           cd /tmp/
           zip -r -q ${PLUGIN_ZIP_PATH} ./elementor-pro
           echo "zip"
+          ls -al
 
           echo "PLUGIN_ZIP_FILENAME=${PLUGIN_ZIP_FILENAME}" >> $GITHUB_ENV
           echo "PLUGIN_ZIP_PATH=${PLUGIN_ZIP_PATH}" >> $GITHUB_ENV
         fi
 
         echo "env"
+        echo "${PLUGIN_FILENAME}"
         echo "PLUGIN_FILENAME=${PLUGIN_FILENAME}" >> $GITHUB_OUTPUT
 
     - name: Publish zip on push to release or develop
