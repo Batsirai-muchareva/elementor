@@ -92,11 +92,9 @@ runs:
       run: |
         ELEMENTOR_CORE_BRANCH="${{ inputs.ELEMENTOR_PRO_CORE_BRANCH }}"
         ROOT_DIR=$(pwd)
-        echo $ROOT_DIR
 
         rm -rf ../elementor
         echo "Cloning ELEMENTOR_CORE_BRANCH: ${ELEMENTOR_CORE_BRANCH}"
-        echo $ROOT_DIR
 
         # Cloning the core plugin into the elementor folder outside elementor-pro folder
         git clone --single-branch --branch ${ELEMENTOR_CORE_BRANCH} https://github.com/elementor/elementor.git ../elementor
@@ -117,19 +115,13 @@ runs:
 
         CORE_PACKAGE_VERSION=$(node -p "require('./package.json').version")
         echo "CORE_PACKAGE_VERSION=${CORE_PACKAGE_VERSION}" >> $GITHUB_ENV
-        ls -al
-        echo $ROOT_DIR
 
         cd /tmp/elementor-builds/
-        ls -al
-        echo $ROOT_DIR
         mv ./${CORE_PACKAGE_VERSION} ./elementor
-        ls -al
         zip -r elementor.zip ./elementor
-        ls -al
+
         cd $ROOT_DIR
 
-        ls -al
         mv /tmp/elementor-builds/elementor.zip ./elementor.zip
 
     - name: Build Plugin
@@ -140,6 +132,8 @@ runs:
         export PUPPETEER_SKIP_DOWNLOAD=true
 
         npx grunt build
+        echo ${{ env.REPOSITORY_NAME }}
+        ls -al
 
         if [ "${{ env.REPOSITORY_NAME }}" == "elementor" ]; then
 
@@ -150,6 +144,7 @@ runs:
           zip -r ${PLUGIN_ZIP_FILENAME} elementor
 
         elif [ "${{ env.REPOSITORY_NAME }}" == "elementor-pro" ]; then
+          ls -al
 
           PLUGIN_FILENAME="elementor-pro-${{ env.BUILD_PACKAGE_VERSION }}"
           PLUGIN_ZIP_FILENAME="${PLUGIN_FILENAME}.zip"
