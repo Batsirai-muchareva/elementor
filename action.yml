@@ -165,8 +165,8 @@ runs:
 
           cd /tmp/
           zip -r -q ${PLUGIN_ZIP_PATH} ./elementor-pro
-          unzip -qo ${PLUGIN_ZIP_PATH} -d .
           cd $ROOT_DIR
+          unzip -qo ${PLUGIN_ZIP_PATH} -d ./elementor-pro
 
           echo "PLUGIN_ZIP_FILENAME=${PLUGIN_ZIP_FILENAME}" >> $GITHUB_ENV
           echo "PLUGIN_ZIP_PATH=${PLUGIN_ZIP_PATH}" >> $GITHUB_ENV
