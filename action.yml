@@ -140,6 +140,7 @@ runs:
 
           mv build elementor
           zip -r ${PLUGIN_ZIP_FILENAME} elementor
+          ls -al elementor
 
         elif [ "${{ env.REPOSITORY_NAME }}" == "elementor-pro" ]; then
           ROOT_DIR=$(pwd)
@@ -164,7 +165,7 @@ runs:
 
           cd /tmp/
           zip -r -q ${PLUGIN_ZIP_PATH} ./elementor-pro
-
+          unzip -q ${PLUGIN_ZIP_PATH} -d .
           cd $ROOT_DIR
 
           echo "PLUGIN_ZIP_FILENAME=${PLUGIN_ZIP_FILENAME}" >> $GITHUB_ENV
