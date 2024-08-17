@@ -108,7 +108,9 @@ jobs:
           node-version: 20.x
 
       - name: Install Dependencies
-        run: npm ci
+        run: |
+          npm ci
+          ls -al
 
       - name: Download build artifact
         uses: actions/download-artifact@v4
@@ -118,5 +120,10 @@ jobs:
 
       - name: Zip the downloaded build
         run: |
+          ls -al
+          ls -al elementor
+
           PLUGIN_ZIP_FILENAME=elementor-${{ env.PACKAGE_VERSION }}.zip
+          cat elementor/elementor.php
+
           zip -r ${PLUGIN_ZIP_FILENAME} elementor
