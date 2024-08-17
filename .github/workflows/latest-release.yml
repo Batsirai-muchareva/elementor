@@ -78,7 +78,6 @@ jobs:
       PACKAGE_VERSION: ${{ needs.configure-env-variables.outputs.PACKAGE_VERSION }}
 
   latest_release:
-    if: github.event.pull_request.merged == true && github.base_ref == 'main' && !contains(github.event.pull_request.labels.*.name, 'skip release' )
     needs: [ build-plugin, configure-env-variables ]
     env:
       PACKAGE_VERSION: ${{ needs.configure-env-variables.outputs.PACKAGE_VERSION }}
