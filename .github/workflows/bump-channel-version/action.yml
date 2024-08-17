@@ -54,7 +54,7 @@ runs:
         if [[ ${{ inputs.CHANNEL }} == "beta" ]]; then
           BETA_VERSION=${ELEMENTOR_CHANNEL_PACKAGE_VERSION}
         else
-          BETA_VERSION=$(git ls-remote --tags | awk '{print $2}' | sed 's/^refs\/tags\/v//' | sed 's/^refs\/tags\///' | grep -E '^[0-9]+\.[0-9]+\.[0-9]-beta[1-9]$' | sort -V | tail -n 1)
+          BETA_VERSION=""
         fi
 
         echo "BETA_VERSION=$BETA_VERSION"
