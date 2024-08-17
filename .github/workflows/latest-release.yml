@@ -1,14 +1,24 @@
 name: Automated Latest Release
 
-env:
-  CHANNEL: 'latest'
-  PRERELEASE: 'false'
-
 on:
-  pull_request_target:
-    types: [closed]
-    branches:
-      - main
+  workflow_dispatch:
+    inputs:
+      channel:
+        required: true
+        type: choice
+        description: Select a channel. For cloud, use main branch only!
+        options:
+          - ga
+          - beta
+          - cloud
+      PRERELEASE:
+        type: boolean
+        description: 'Pre-release?'
+        required: false
+
+env:
+  CHANNEL: ${{inputs.channel}}
+  PRERELEASE: 'false'
 
 permissions:
   contents: write
