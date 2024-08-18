@@ -41,6 +41,7 @@ jobs:
       PLUGIN_ZIP_FILENAME: ${{ env.PLUGIN_ZIP_FILENAME }}
       PLUGIN_ZIP_PATH: ${{ env.PLUGIN_ZIP_PATH }}
       PACKAGE_FILES_VERSION: ${{ env.PACKAGE_FILES_VERSION }}
+      BETA_VERSION: ${{ env.BETA_VERSION }}
       PREVIOUS_TAG_SHA: ${{ env.PREVIOUS_TAG_SHA }}
     steps:
       - name: Checkout Branch
@@ -89,6 +90,7 @@ jobs:
       PLUGIN_ZIP_FILENAME: ${{ needs.configure-env-variables.outputs.PLUGIN_ZIP_FILENAME }}
       PLUGIN_ZIP_PATH: ${{ needs.configure-env-variables.outputs.PLUGIN_ZIP_PATH }}
       PREVIOUS_TAG_SHA: ${{ needs.configure-env-variables.outputs.PREVIOUS_TAG_SHA }}
+      BETA_VERSION: ${{ needs.configure-env-variables.outputs.BETA_VERSION }}
     permissions: write-all
     runs-on: ubuntu-22.04
     steps:
@@ -113,6 +115,9 @@ jobs:
         run: |
           npm ci
           ls -al
+
+      - name: Update Beta tag
+        uses: ./.github/workflows/update-beta-tag-in-readme
 
       - name: Download build artifact
         uses: actions/download-artifact@v4
