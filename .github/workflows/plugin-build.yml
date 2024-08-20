@@ -105,6 +105,8 @@ jobs:
       - name: Clone Elementor Core
         if: ${{ inputs.IS_CORE_PRO == true }}
         run: |
+          ELEMENTOR_CORE_BRANCH="${{ inputs.ELEMENTOR_PRO_CORE_BRANCH }}"
+
           ls -al
           rm -rf ../elementor
           echo "Cloning ELEMENTOR_CORE_BRANCH: ${ELEMENTOR_CORE_BRANCH}"
@@ -122,7 +124,6 @@ jobs:
         run: |
           ls -al
 
-          ELEMENTOR_CORE_BRANCH="${{ inputs.ELEMENTOR_PRO_CORE_BRANCH }}"
           ROOT_DIR=$(pwd)
           ls -al
 
