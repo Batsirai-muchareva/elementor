@@ -43,7 +43,11 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install Dependencies for the main repository
-        uses: Batsirai-muchareva/elementor/.github/workflows/dependencies-installation@main
+        run: |
+          npm ci
+          composer install --optimize-autoloader --prefer-dist
+          composer install --no-scripts --no-dev
+          composer dump-autoload
 
       - name: Set GitHub Repository Name Environment Variable
         shell: bash
