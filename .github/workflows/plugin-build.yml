@@ -101,20 +101,26 @@ jobs:
       - name: Clone Elementor Core
         if: ${{ inputs.IS_CORE_PRO == true }}
         run: |
+          ls -al
           rm -rf ../elementor
           echo "Cloning ELEMENTOR_CORE_BRANCH: ${ELEMENTOR_CORE_BRANCH}"
 
           # Cloning the core plugin into the elementor folder outside elementor-pro folder
           git clone --single-branch --branch ${ELEMENTOR_CORE_BRANCH} https://github.com/elementor/elementor.git ../elementor
+          ls -al
 
           # Navigate to elementor folder
           cd ../elementor
+          ls -al
 
       - name: Build Core Plugin for Pro
         if: env.REPOSITORY_NAME == 'elementor-pro'
         run: |
+          ls -al
+
           ELEMENTOR_CORE_BRANCH="${{ inputs.ELEMENTOR_PRO_CORE_BRANCH }}"
           ROOT_DIR=$(pwd)
+          ls -al
 
           # Run installation of npm and composer dependencies for core plugin
           npm ci
