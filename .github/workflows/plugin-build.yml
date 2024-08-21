@@ -178,7 +178,9 @@ jobs:
             ls -al
 
             mv "${PACKAGE_BASE_DIR}/${PACKAGE_PATH}" ${PLUGIN_ZIP_FILENAME}
-            unzip -o ${PACKAGE_BASE_DIR}/${PACKAGE_PATH} -d $GITHUB_WORKSPACE
+            unzip -o ${PACKAGE_PATH} -d .
+
+            PLUGIN_FILENAME=elementor-pro
 
             ls -al
           fi
