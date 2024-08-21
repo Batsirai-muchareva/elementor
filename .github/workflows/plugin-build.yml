@@ -175,8 +175,12 @@ jobs:
             PACKAGE_BASE_DIR="/tmp/elementor-pro-releases/"
             PACKAGE_PATH=$(ls $PACKAGE_BASE_DIR)
             PLUGIN_ZIP_PATH=$(pwd)/${PLUGIN_ZIP_FILENAME}
+            ls -al
 
             mv "${PACKAGE_BASE_DIR}/${PACKAGE_PATH}" ${PLUGIN_ZIP_FILENAME}
+            unzip -o ${PACKAGE_BASE_DIR}/${PACKAGE_PATH} -d $GITHUB_WORKSPACE
+
+            ls -al
           fi
 
           if [[ ${{ env.REPOSITORY_NAME }} == "elementor-pro" &&  ${{ inputs.IS_CORE_FOR_PRO_BUILD }} == "true"  ]]; then
