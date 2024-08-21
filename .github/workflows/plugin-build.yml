@@ -139,7 +139,7 @@ jobs:
           # There is a duplicate of the same step in step `Build Core Plugin for Pro`
           # if you update here you also need to update there
 
-          if [[ ${{ inputs.IS_CORE_FOR_PRO_BUILD }} == "true" || ${{ env.REPOSITORY_NAME }} == "elementor-pro" ]]; then
+          if [[ ${{ inputs.IS_CORE_FOR_PRO_BUILD }} == "true" && ${{ env.REPOSITORY_NAME }} == "elementor-pro" ]]; then
             cd ../elementor
           fi
 
@@ -151,7 +151,7 @@ jobs:
       - name: Build Plugin
         id: build_plugin
         run: |
-          if [[ ${{ inputs.IS_CORE_FOR_PRO_BUILD }} == "true" || ${{ env.REPOSITORY_NAME }} == "elementor-pro" ]]; then
+          if [[ ${{ inputs.IS_CORE_FOR_PRO_BUILD }} == "true" && ${{ env.REPOSITORY_NAME }} == "elementor-pro" ]]; then
             cd ../elementor
           fi
 
