@@ -29,12 +29,11 @@ on:
         type: boolean
         description: 'Optional. If true, the plugin build will be released.'
         default: false
-      IS_CORE_FOR_PRO:
+      IS_CORE_FOR_PRO_BUILD:
         required: false
         type: boolean
         description: 'Optional. If true, the core for pro plugin will be built.'
         default: false
-
 
     secrets:
       DEPLOY_BUILDS_ENDPOINT:
@@ -46,10 +45,6 @@ on:
         description: "The name of the generated zip file."
         value: ${{ jobs.plugin_build.outputs.artifact_name }}
 
-      core_for_pro_artifact_name:
-        description: "The name of the generated zip file for core for pro"
-        value: ${{ jobs.plugin_build.outputs.artifact_name }}
-
 jobs:
   plugin_build:
     runs-on: ubuntu-latest
@@ -58,7 +53,14 @@ jobs:
       core_for_pro_artifact_name: ${{ env.CORE_FOR_PRO_PLUGIN_FILENAME || 'elementor' }}
     steps:
       - name: Checkout Source Code
+        if: env.IS_CUSTOM_CORE == false
         uses: actions/checkout@v4
+
+      - name: Checkout Source Code
+        if: env.IS_CUSTOM_CORE == true && github.event_name == 'schedule'
+        uses: actions/checkout@v4
+        with:
+          ref: 'main'
 
       - name: Set GitHub Repository Name Environment Variable
         shell: bash
@@ -121,7 +123,6 @@ jobs:
         if: env.REPOSITORY_NAME == 'elementor-pro' && inputs.IS_RELEASE == false
         run: export PUPPETEER_SKIP_DOWNLOAD=true
 
-
       - name: Clone Elementor Core For Pro
         if: env.REPOSITORY_NAME == 'elementor-pro'
         run: |
@@ -138,7 +139,7 @@ jobs:
           # There is a duplicate of the same step in step `Build Core Plugin for Pro`
           # if you update here you also need to update there
 
-          if [[ ${{ inputs.IS_CORE_FOR_PRO }} == "true" || ${{ env.REPOSITORY_NAME }} == "elementor-pro" ]]; then
+          if [[ ${{ inputs.IS_CORE_FOR_PRO_BUILD }} == "true" || ${{ env.REPOSITORY_NAME }} == "elementor-pro" ]]; then
             cd ../elementor
           fi
 
@@ -150,7 +151,7 @@ jobs:
       - name: Build Plugin for the Main Repository
         id: build_plugin
         run: |
-          if [[ ${{ inputs.IS_CORE_FOR_PRO }} == "true" || ${{ env.REPOSITORY_NAME }} == "elementor-pro" ]]; then
+          if [[ ${{ inputs.IS_CORE_FOR_PRO_BUILD }} == "true" || ${{ env.REPOSITORY_NAME }} == "elementor-pro" ]]; then
             cd ../elementor
           fi
 
@@ -168,7 +169,7 @@ jobs:
           echo "PLUGIN_FILENAME=${PLUGIN_FILENAME}" >> $GITHUB_ENV
 
       - name: Zip Core for Pro Plugin
-        if: env.REPOSITORY_NAME == 'elementor-pro' &&  inputs.IS_CORE_FOR_PRO  == true
+        if: env.REPOSITORY_NAME == 'elementor-pro' &&  inputs.IS_CORE_FOR_PRO_BUILD  == true
         run: |
           CORE_PACKAGE_VERSION=$(node -p "require('./package.json').version")
 
@@ -183,7 +184,7 @@ jobs:
           echo "PLUGIN_FILENAME=${PLUGIN_FILENAME}" >> $GITHUB_ENV
 
       - name: Zip Elementor Pro Build Files
-        if: env.REPOSITORY_NAME == 'elementor-pro' && inputs.IS_CORE_FOR_PRO  == false
+        if: env.REPOSITORY_NAME == 'elementor-pro' && inputs.IS_CORE_FOR_PRO_BUILD  == false
         run: |
           PLUGIN_FILENAME="elementor-pro-${{ env.BUILD_PACKAGE_VERSION }}"
           PLUGIN_ZIP_FILENAME="${PLUGIN_FILENAME}.zip"
@@ -206,7 +207,6 @@ jobs:
           cd /tmp/
           zip -r -q ${PLUGIN_ZIP_PATH} ./elementor-pro
           cd ${{ env.ROOT_DIR }}
-
           unzip -qo ${PLUGIN_ZIP_PATH} -d ./elementor-pro
 
           echo "PLUGIN_ZIP_FILENAME=${PLUGIN_ZIP_FILENAME}" >> $GITHUB_ENV
