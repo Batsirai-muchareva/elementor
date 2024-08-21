@@ -171,7 +171,7 @@ jobs:
           # When the 'npx grunt build' is done running in PRO it creates a zip build file in
           # /tmp/elementor-pro-releases folder named elementor-pro-{PACKAGE_VERSION}.zip
           # So we move the zip generated to the root folder of the repository
-          if [[ ${{ env.REPOSITORY_NAME }} == "elementor-pro" &&  ${{ inputs.IS_CORE_FOR_PRO }} == "false"  ]]; then
+          if [[ ${{ env.REPOSITORY_NAME }} == "elementor-pro" &&  ${{ inputs.IS_CORE_FOR_PRO_BUILD }} == "false"  ]]; then
             PACKAGE_BASE_DIR="/tmp/elementor-pro-releases/"
             PACKAGE_PATH=$(ls $PACKAGE_BASE_DIR)
             PLUGIN_ZIP_PATH=$(pwd)/${PLUGIN_ZIP_FILENAME}
@@ -179,7 +179,7 @@ jobs:
             mv "${PACKAGE_BASE_DIR}/${PACKAGE_PATH}" ${PLUGIN_ZIP_FILENAME}
           fi
 
-          if [[ ${{ env.REPOSITORY_NAME }} == "elementor-pro" &&  ${{ inputs.IS_CORE_FOR_PRO }} == "true"  ]]; then
+          if [[ ${{ env.REPOSITORY_NAME }} == "elementor-pro" &&  ${{ inputs.IS_CORE_FOR_PRO_BUILD }} == "true"  ]]; then
             CORE_PACKAGE_VERSION=$(node -p "require('./package.json').version")
 
             cd /tmp/elementor-builds/
