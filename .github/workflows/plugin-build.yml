@@ -123,7 +123,6 @@ jobs:
         if: env.REPOSITORY_NAME == 'elementor-pro' && inputs.IS_RELEASE == false
         run: export PUPPETEER_SKIP_DOWNLOAD=true
 
-
       - name: Clone Elementor Core For Pro
         if: env.REPOSITORY_NAME == 'elementor-pro'
         run: |
@@ -208,7 +207,6 @@ jobs:
           cd /tmp/
           zip -r -q ${PLUGIN_ZIP_PATH} ./elementor-pro
           cd ${{ env.ROOT_DIR }}
-
           unzip -qo ${PLUGIN_ZIP_PATH} -d ./elementor-pro
 
           echo "PLUGIN_ZIP_FILENAME=${PLUGIN_ZIP_FILENAME}" >> $GITHUB_ENV
