@@ -33,7 +33,6 @@ concurrency:
 jobs:
   configure-env-variables:
     runs-on: ubuntu-22.04
-    if: github.event.pull_request.merged == true && github.base_ref == 'main' && !contains(github.event.pull_request.labels.*.name, 'skip release' )
     outputs:
       PACKAGE_VERSION: ${{ env.PACKAGE_VERSION }}
       CLEAN_PACKAGE_VERSION: ${{ env.CLEAN_PACKAGE_VERSION }}
@@ -73,7 +72,6 @@ jobs:
           OVERRIDE_PACKAGE_VERSION: true
 
   build-plugin:
-    if: github.event.pull_request.merged == true && github.base_ref == 'main' && !contains(github.event.pull_request.labels.*.name, 'skip release' )
     name: Build Plugin
     needs: [configure-env-variables]
     uses: ./.github/workflows/plugin-build.yml
