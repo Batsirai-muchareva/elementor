@@ -176,9 +176,17 @@ jobs:
             PACKAGE_PATH=$(ls $PACKAGE_BASE_DIR)
             PLUGIN_ZIP_PATH=$(pwd)/${PLUGIN_ZIP_FILENAME}
             ls -al
+            ls -al $PACKAGE_BASE_DIR
 
+            # When the 'npx grunt build' is done running in PRO it creates a zip build file in
+            # /tmp/elementor-pro-releases folder named elementor-pro-{PACKAGE_VERSION}.zip
+            # So we move the zip generated to the root folder of the repository
             mv "${PACKAGE_BASE_DIR}/${PACKAGE_PATH}" ${PLUGIN_ZIP_FILENAME}
-            unzip -o ${PACKAGE_PATH} -d .
+            ls -al
+
+            ls -al $PACKAGE_BASE_DIR
+
+            unzip -q ${PLUGIN_ZIP_PATH} -d .
 
             PLUGIN_FILENAME=elementor-pro
 
