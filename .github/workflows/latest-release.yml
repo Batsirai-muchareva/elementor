@@ -31,22 +31,19 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  configure-env-variables:
+  latest_release:
+    permissions: write-all
     runs-on: ubuntu-22.04
-    outputs:
-      PACKAGE_VERSION: ${{ env.PACKAGE_VERSION }}
-      CLEAN_PACKAGE_VERSION: ${{ env.CLEAN_PACKAGE_VERSION }}
-      CURRENT_CHANNEL_VERSION: ${{ env.CURRENT_CHANNEL_VERSION }}
-      CLEAN_REF: ${{ env.CLEAN_REF }}
-      PLUGIN_ZIP_FILENAME: ${{ env.PLUGIN_ZIP_FILENAME }}
-      PACKAGE_FILES_VERSION: ${{ env.PACKAGE_FILES_VERSION }}
-      BETA_VERSION: ${{ env.BETA_VERSION }}
-      PREVIOUS_TAG_SHA: ${{ env.PREVIOUS_TAG_SHA }}
     steps:
-      - name: Checkout Branch
+      - name: checkout branch
         uses: actions/checkout@v4
         with:
           ref: main
+
+      - name: Install Node.js 20.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
 
       - name: Set POSTFIX value
         id: set_postfix_value
@@ -62,76 +59,21 @@ jobs:
           REF: ${{ github.ref }}
           POSTFIX: ${{ steps.set_postfix_value.outputs.postfix }}
 
-      - name: Bump Channel Version
-        id: bump_channel_version
-        uses: ./.github/workflows/bump-channel-version
-        with:
-          CLEAN_PACKAGE_VERSION: ${{ env.CLEAN_PACKAGE_VERSION }}
-          CHANNEL: ${{ env.CHANNEL }}
-          POSTFIX: ${{ steps.set_postfix_value.outputs.postfix }}
-          OVERRIDE_PACKAGE_VERSION: true
-
-  build-plugin:
-    name: Build Plugin
-    needs: [configure-env-variables]
-    uses: ./.github/workflows/plugin-build.yml
-    with:
-      IS_RELEASE: true
-      PACKAGE_VERSION: ${{ needs.configure-env-variables.outputs.PACKAGE_VERSION }}
-      PACKAGE_FILES_VERSION: ${{ needs.configure-env-variables.outputs.PACKAGE_FILES_VERSION }}
-
-  latest_release:
-    needs: [ build-plugin, configure-env-variables ]
-    env:
-      PACKAGE_VERSION: ${{ needs.configure-env-variables.outputs.PACKAGE_VERSION }}
-      CLEAN_PACKAGE_VERSION: ${{ needs.configure-env-variables.outputs.CLEAN_PACKAGE_VERSION }}
-      CURRENT_CHANNEL_VERSION: ${{ needs.configure-env-variables.outputs.CURRENT_CHANNEL_VERSION }}
-      CLEAN_REF: ${{ needs.configure-env-variables.outputs.CLEAN_REF }}
-      PLUGIN_ZIP_FILENAME: ${{ needs.configure-env-variables.outputs.PLUGIN_ZIP_FILENAME }}
-      PREVIOUS_TAG_SHA: ${{ needs.configure-env-variables.outputs.PREVIOUS_TAG_SHA }}
-      BETA_VERSION: ${{ needs.configure-env-variables.outputs.BETA_VERSION }}
-    permissions: write-all
-    runs-on: ubuntu-22.04
-    steps:
-      - name: checkout branch
-        uses: actions/checkout@v4
-        with:
-          ref: main
-
-      - name: Get Configuration
-        id: configuration
-        uses: rgarcia-phi/json-to-variables@9835d537368468c4e4de5254dc3efeadda183793
-        with:
-          filename: './.github/workflows/config.json'
-          prefix: config
-
-      - name: Install Node.js 20.x
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20.x
-
       - name: Install Dependencies
-        run: |
-          npm ci
-          ls -al
-
-      - name: Update Beta tag
-        uses: ./.github/workflows/update-readme-txt
+        uses: ./.github/workflows/install-dependencies
+      - name: Build plugin
+        uses: ./.github/workflows/build-plugin
         with:
-          UPDATE_BETA_TAG: true
-
-      - name: Download build artifact
-        uses: actions/download-artifact@v4
+          PACKAGE_VERSION: ${{ env.PACKAGE_VERSION }}
+          BUILD_SCRIPT_PATH: "./.github/scripts/build-zip.sh"
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@v1
+        env:
+          GITHUB_REPOSITORY: ${{ github.repository }}
         with:
-          name: ${{ needs.build-plugin.outputs.artifact_name }}
-          path: ./elementor
-
-      - name: Zip the downloaded build
-        run: |
-          ls -al
-          ls -al elementor
-
-          PLUGIN_ZIP_FILENAME=elementor-${{ env.PACKAGE_VERSION }}.zip
-          cat elementor/elementor.php
-
-          zip -r ${PLUGIN_ZIP_FILENAME} elementor
+          tag_name: ${{ env.PACKAGE_VERSION }}
+          target_commitish: ${{ env.CLEAN_REF }}
+          files: elementor-*.zip
+          body: "Automated release for ${{ env.PACKAGE_VERSION }}"
+          prerelease: ${{ env.PRERELEASE }}
+          token: ${{ secrets.GITHUB_TOKEN }}

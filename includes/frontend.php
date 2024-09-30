@@ -5,7 +5,6 @@ use Elementor\Core\Base\App;
 use Elementor\Core\Base\Elements_Iteration_Actions\Assets;
 use Elementor\Core\Frontend\Render_Mode_Manager;
 use Elementor\Core\Responsive\Files\Frontend as FrontendFile;
-use Elementor\Core\Files\CSS\Global_CSS;
 use Elementor\Core\Files\CSS\Post as Post_CSS;
 use Elementor\Core\Files\CSS\Post_Preview;
 use Elementor\Core\Responsive\Responsive;
@@ -535,9 +534,9 @@ class Frontend extends App {
 
 		wp_register_style(
 			'e-apple-webkit',
-			$this->get_css_assets_url( 'apple-webkit', 'assets/css/conditionals/' ),
+			$this->get_frontend_file_url( 'apple-webkit.min.css', $has_custom_breakpoints, 'conditionals/' ),
 			[],
-			ELEMENTOR_VERSION
+			$has_custom_breakpoints ? null : ELEMENTOR_VERSION
 		);
 
 		wp_register_style(
@@ -573,7 +572,7 @@ class Frontend extends App {
 			wp_register_style(
 				"widget-{$widget_name}",
 				$this->get_css_assets_url( "widget-{$widget_name}", null, true, true ),
-				[],
+				[ 'elementor-frontend' ],
 				ELEMENTOR_VERSION
 			);
 		}
@@ -583,7 +582,7 @@ class Frontend extends App {
 			wp_register_style(
 				"widget-{$widget_name}",
 				$this->get_frontend_file_url( "widget-{$widget_name}{$direction_suffix}.min.css", $has_custom_breakpoints ),
-				[],
+				[ 'elementor-frontend' ],
 				$has_custom_breakpoints ? null : ELEMENTOR_VERSION
 			);
 		}
@@ -683,8 +682,6 @@ class Frontend extends App {
 			do_action( 'elementor/frontend/after_enqueue_styles' );
 
 			if ( ! Plugin::$instance->preview->is_preview_mode() ) {
-				$this->parse_global_css_code();
-
 				$post_id = get_the_ID();
 				// Check $post_id for virtual pages. check is singular because the $post_id is set to the first post on archive pages.
 				if ( $post_id && is_singular() ) {
@@ -715,13 +712,13 @@ class Frontend extends App {
 	 *
 	 * @return string frontend file URL
 	 */
-	public function get_frontend_file_url( $frontend_file_name, $custom_file ) {
+	public function get_frontend_file_url( $frontend_file_name, $custom_file, $css_subfolder = '' ) {
 		if ( $custom_file ) {
 			$frontend_file = $this->get_frontend_file( $frontend_file_name );
 
 			$frontend_file_url = $frontend_file->get_url();
 		} else {
-			$frontend_file_url = ELEMENTOR_ASSETS_URL . 'css/' . $frontend_file_name;
+			$frontend_file_url = ELEMENTOR_ASSETS_URL . 'css/' . $css_subfolder . $frontend_file_name;
 		}
 
 		return $frontend_file_url;
@@ -1053,20 +1050,6 @@ class Frontend extends App {
 
 		$this->fonts_to_enqueue[] = $font;
 		$this->registered_fonts[] = $font;
-	}
-
-	/**
-	 * Parse global CSS.
-	 *
-	 * Enqueue the global CSS file.
-	 *
-	 * @since 1.2.0
-	 * @access protected
-	 */
-	protected function parse_global_css_code() {
-		$scheme_css_file = Global_CSS::create( 'global.css' );
-
-		$scheme_css_file->enqueue();
 	}
 
 	/**
