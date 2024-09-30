@@ -38,9 +38,9 @@ runs:
 
         echo "ELEMENTOR_CHANNEL_PACKAGE_VERSION=${ELEMENTOR_CHANNEL_PACKAGE_VERSION}"
 
-        sed -i -E "s/Version: .*/Version: ${ELEMENTOR_CHANNEL_PACKAGE_VERSION}/g" elementor.php
-        sed -i -E "s/ELEMENTOR_VERSION', '.*'/ELEMENTOR_VERSION', '${ELEMENTOR_CHANNEL_PACKAGE_VERSION}'/g" elementor.php
+        echo "PACKAGE_FILES_VERSION=${ELEMENTOR_CHANNEL_PACKAGE_VERSION}" >> $GITHUB_ENV
 
+        cat elementor.php
         echo "ELEMENTOR_CHANNEL_PACKAGE_VERSION=${ELEMENTOR_CHANNEL_PACKAGE_VERSION}"
         echo "NEW_CHANNEL_VERSION=${NEW_CHANNEL_VERSION}"
 
@@ -54,16 +54,7 @@ runs:
         if [[ ${{ inputs.CHANNEL }} == "beta" ]]; then
           BETA_VERSION=${ELEMENTOR_CHANNEL_PACKAGE_VERSION}
         else
-          BETA_VERSION=$(git ls-remote --tags | awk '{print $2}' | sed 's/^refs\/tags\/v//' | sed 's/^refs\/tags\///' | grep -E '^[0-9]+\.[0-9]+\.[0-9]-beta[1-9]$' | sort -V | tail -n 1)
+          BETA_VERSION=""
         fi
 
-        echo "BETA_VERSION=$BETA_VERSION"
-
-        if grep -q "Beta tag:" ./readme.txt
-          then
-            echo "Replace existing beta tag in readme file"
-            sed -i -E "s/Beta tag: .*/Beta tag: $BETA_VERSION/g" ./readme.txt
-          else
-            echo "Add beta tag to readme file"
-            sed -i -E '/^Stable tag: .*/a\'$'\n'"Beta tag: $BETA_VERSION$(printf '\n\r')" ./readme.txt
-        fi
+        echo "BETA_VERSION=$BETA_VERSION" >> $GITHUB_ENV
