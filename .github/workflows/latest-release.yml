@@ -66,6 +66,7 @@ jobs:
         with:
           PACKAGE_VERSION: ${{ env.PACKAGE_VERSION }}
           BUILD_SCRIPT_PATH: "./.github/scripts/build-zip.sh"
+
       - name: Create GitHub release
         uses: softprops/action-gh-release@v1
         env:
@@ -74,6 +75,6 @@ jobs:
           tag_name: ${{ env.PACKAGE_VERSION }}
           target_commitish: ${{ env.CLEAN_REF }}
           files: elementor-*.zip
-          body: "Automated release for ${{ env.PACKAGE_VERSION }}"
+          body: "Latest Release for ${{ env.PACKAGE_VERSION }} - ${{inputs.channel}}"
           prerelease: ${{ env.PRERELEASE }}
           token: ${{ secrets.GITHUB_TOKEN }}

@@ -12,8 +12,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Elementor Container.
  *
- * Elementor container handler class is responsible for containerization
- * manager classes and their dependencies.
+ * Elementor container handler class is responsible for the containerization
+ * of manager classes and their dependencies.
  *
  * @since 3.24.0
  */
@@ -25,8 +25,6 @@ class Container {
 	private function __construct() {}
 
 	private function __clone() {}
-
-	private function __wakeup() {}
 
 	private static function initialize(): DIContainer {
 		if ( isset( self::$instance ) ) {
@@ -55,5 +53,3 @@ class Container {
 		return static::$instance;
 	}
 }
-
-
