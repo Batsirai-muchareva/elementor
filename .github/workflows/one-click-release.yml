@@ -70,4 +70,4 @@ jobs:
           target_commitish: ${{ env.CLEAN_REF }}
           files: elementor-*.zip
           prerelease: ${{ github.event.inputs.pre_release }}
-          body_path: ${{ env.CHANGELOG_FILE }}
+          token: ${{ secrets.GITHUB_TOKEN }}
