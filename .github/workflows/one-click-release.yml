@@ -69,5 +69,6 @@ jobs:
           tag_name: ${{ env.PACKAGE_VERSION }}
           target_commitish: ${{ env.CLEAN_REF }}
           files: elementor-*.zip
+          body: "One click TRelease ${{ env.PACKAGE_VERSION }}"
           prerelease: ${{ github.event.inputs.pre_release }}
           token: ${{ secrets.GITHUB_TOKEN }}
