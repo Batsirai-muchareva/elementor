@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { type RefObject, useEffect, useState } from 'react';
-import { sizePropTypeUtil, type SizePropValue } from '@elementor/editor-props';
+import { type PropType, sizePropTypeUtil, type SizePropValue } from '@elementor/editor-props';
 import { useActiveBreakpoint } from '@elementor/editor-responsive';
 import { usePopupState } from '@elementor/ui';
 
@@ -40,6 +40,7 @@ type BaseSizeControlProps = {
 	disableCustom?: boolean;
 	anchorRef?: RefObject< HTMLDivElement | null >;
 	min?: number;
+	enablePropTypeUnits?: boolean;
 };
 
 type LengthSizeControlProps = BaseSizeControlProps &
@@ -88,6 +89,7 @@ export const SizeControl = createControl(
 		extendedOptions,
 		disableCustom,
 		min = 0,
+		enablePropTypeUnits = false,
 	}: Omit< SizeControlProps, 'variant' > & { variant?: SizeVariant } ) => {
 		const {
 			value: sizeValue,
@@ -101,9 +103,9 @@ export const SizeControl = createControl(
 		console.log( propType );
 
 		const actualDefaultUnit = defaultUnit ?? externalPlaceholder?.unit ?? defaultSelectedUnit[ variant ];
-		const actualUnits = units ?? [ ...defaultUnits[ variant ] ];
 		const [ internalState, setInternalState ] = useState( createStateFromSizeProp( sizeValue, actualDefaultUnit ) );
 		const activeBreakpoint = useActiveBreakpoint();
+		const actualUnits = resolveUnits( propType, enablePropTypeUnits, variant, units );
 
 		const actualExtendedOptions = useSizeExtendedOptions( extendedOptions || [], disableCustom ?? false );
 		const popupState = usePopupState( { variant: 'popover' } );
@@ -234,6 +236,21 @@ export const SizeControl = createControl(
 		);
 	}
 );
+
+function resolveUnits(
+	propType: PropType,
+	enablePropTypeUnits: boolean,
+	variant: SizeVariant,
+	externalUnits?: Unit[]
+) {
+	const fallback = [ ...defaultUnits[ variant ] ];
+
+	if ( ! enablePropTypeUnits ) {
+		return externalUnits ?? fallback;
+	}
+
+	return ( propType.settings?.available_units as Unit[] ) ?? fallback;
+}
 
 function formatSize< TSize extends string | number >( size: TSize, unit: Unit | ExtendedOption ): TSize {
 	if ( isUnitExtendedOption( unit ) ) {
