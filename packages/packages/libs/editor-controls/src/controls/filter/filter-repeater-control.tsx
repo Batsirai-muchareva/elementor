@@ -23,6 +23,7 @@ import type { RepeatablePropValue } from '../../components/unstable-repeater/typ
 import { createControl } from '../../create-control';
 import { FilterConfigProvider, useFilterConfig } from './context/filter-config-context';
 import { FilterContent } from './filter-content';
+import { FilterIcon } from './filter-icon';
 import { FilterLabel } from './filter-label';
 
 type FilterPropName = {
@@ -71,7 +72,7 @@ const Repeater = ( { propTypeUtil, label }: RepeaterProps ) => {
 			<Header label={ label }>
 				<TooltipAddItemAction newItemIndex={ 0 } />
 			</Header>
-			<ItemsContainer itemTemplate={ <Item Label={ FilterLabel } Icon={ () => null } /> }>
+			<ItemsContainer itemTemplate={ <Item Label={ FilterLabel } Icon={ FilterIcon } /> }>
 				<DuplicateItemAction />
 				<DisableItemAction />
 				<RemoveItemAction />

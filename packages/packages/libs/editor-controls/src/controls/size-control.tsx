@@ -99,9 +99,6 @@ export const SizeControl = createControl(
 			placeholder: externalPlaceholder,
 			propType,
 		} = useBoundProp( sizePropTypeUtil );
-
-		console.log( propType );
-
 		const actualDefaultUnit = defaultUnit ?? externalPlaceholder?.unit ?? defaultSelectedUnit[ variant ];
 		const [ internalState, setInternalState ] = useState( createStateFromSizeProp( sizeValue, actualDefaultUnit ) );
 		const activeBreakpoint = useActiveBreakpoint();

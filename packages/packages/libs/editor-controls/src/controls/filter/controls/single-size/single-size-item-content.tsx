@@ -1,32 +1,31 @@
 import { useRef } from 'react';
 import * as React from 'react';
 import {
-	blurFilterPropTypeUtil,
+	blurFilterPropTypeUtil, colorToneFilterPropTypeUtil,
 	type createPropUtils,
 	hueRotateFilterPropTypeUtil,
 	intensityFilterPropTypeUtil,
 } from '@elementor/editor-props';
 import { Grid } from '@elementor/ui';
 
-import { PropKeyProvider, PropProvider, useBoundProp } from '../../../bound-prop-context';
-import { ControlFormLabel } from '../../../components/control-form-label';
-import { PopoverGridContainer } from '../../../components/popover-grid-container';
-import { type LengthUnit, type Unit } from '../../../utils/size-control';
-import { SizeControl } from '../../size-control';
-import { type FilterFunction } from '../configs';
-import { useFilterConfig } from '../context/filter-config-context';
+import { PropKeyProvider, PropProvider, useBoundProp } from '../../../../bound-prop-context';
+import { ControlFormLabel } from '../../../../components/control-form-label';
+import { PopoverGridContainer } from '../../../../components/popover-grid-container';
+import { SizeControl } from '../../../size-control';
+import { type FilterFunction } from '../../configs';
+import { useFilterConfig } from '../../context/filter-config-context';
 
 export const propTypeMap: Record< string, ReturnType< typeof createPropUtils > > = {
 	blur: blurFilterPropTypeUtil,
 	intensity: intensityFilterPropTypeUtil,
 	'hue-rotate': hueRotateFilterPropTypeUtil,
-	'color-tone': blurFilterPropTypeUtil,
+	'color-tone': colorToneFilterPropTypeUtil,
 };
 
 export const SingleSizeItemContent = ( { filterFunc }: { filterFunc: FilterFunction } ) => {
 	const rowRef = useRef< HTMLDivElement >( null );
 	const { getFilterFunctionConfig } = useFilterConfig();
-	const { settings, valueName, filterFunctionGroup } = getFilterFunctionConfig( filterFunc );
+	const { valueName, filterFunctionGroup } = getFilterFunctionConfig( filterFunc );
 	const context = useBoundProp( propTypeMap[ filterFunctionGroup as string ] );
 
 	return (
@@ -38,11 +37,7 @@ export const SingleSizeItemContent = ( { filterFunc }: { filterFunc: FilterFunct
 							<ControlFormLabel>{ valueName }</ControlFormLabel>
 						</Grid>
 						<Grid item xs={ 6 }>
-							<SizeControl
-								anchorRef={ rowRef }
-								units={ settings?.available_units as unknown as LengthUnit[] }
-								defaultUnit={ settings.default_unit as Unit }
-							/>
+							<SizeControl anchorRef={ rowRef } enablePropTypeUnits />
 						</Grid>
 					</PopoverGridContainer>
 				</PropKeyProvider>

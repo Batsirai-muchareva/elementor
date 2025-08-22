@@ -31,7 +31,7 @@ export function FilterConfigProvider( { children }: React.PropsWithChildren ) {
 			config,
 			filterOptions,
 			getFilterFunctionConfig: ( filterFunction: FilterFunction ) => config[ filterFunction ],
-			getInitialValue: () => config.blur.default,
+			getInitialValue: () => config.blur.defaultValue,
 		};
 	}, [ propContext.propType ] );
 

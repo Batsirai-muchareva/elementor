@@ -13,12 +13,11 @@ import { ControlFormLabel } from '../../components/control-form-label';
 import { PopoverContent } from '../../components/popover-content';
 import { PopoverGridContainer } from '../../components/popover-grid-container';
 import { useRepeaterContext } from '../../components/unstable-repeater/context/repeater-context';
-import { type LengthUnit } from '../../utils/size-control';
 import { SelectControl } from '../select-control';
 import { type FilterFunction } from './configs';
 import { useFilterConfig } from './context/filter-config-context';
 import { DropShadowItemContent } from './controls/drop-shadow/drop-shadow-item-content';
-import { SingleSizeItemContent } from './controls/single-size-item-content';
+import { SingleSizeItemContent } from './controls/single-size/single-size-item-content';
 
 type Value = FilterItemPropValue[ 'value' ];
 
@@ -31,7 +30,7 @@ export const FilterContent = () => {
 		const funcConfig = getFilterFunctionConfig( newValue?.func.value as FilterFunction );
 
 		if ( meta?.bind === 'func' ) {
-			newValue = funcConfig.default.value as FilterItemPropValue[ 'value' ];
+			newValue = funcConfig.defaultValue.value as FilterItemPropValue[ 'value' ];
 		}
 
 		if ( ! newValue.args ) {
@@ -67,17 +66,12 @@ export const FilterContent = () => {
 const FilterValueContent = () => {
 	const { openItemIndex, items } = useRepeaterContext();
 	const currentItem = items[ openItemIndex ];
-	const { getFilterFunctionConfig } = useFilterConfig();
 
 	const filterFunc = ( currentItem.item.value as FilterItemPropValue[ 'value' ] ).func.value;
 	const isDropShadow = filterFunc === 'drop-shadow';
 
 	if ( isDropShadow ) {
-		return (
-			<DropShadowItemContent
-				units={ getFilterFunctionConfig( filterFunc ).settings.available_units as unknown as LengthUnit[] }
-			/>
-		);
+		return <DropShadowItemContent />;
 	}
 
 	return <SingleSizeItemContent filterFunc={ filterFunc as FilterFunction } />;
