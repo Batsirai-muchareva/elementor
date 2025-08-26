@@ -62,7 +62,7 @@ const normalizeVariables = ( propKey: string ) => {
 	const variables = getVariables( false );
 
 	return Object.entries( variables )
-		.filter( ( [ , variable ] ) => variable.type === propKey )
+		.filter( ( [ , variable ] ) => variable.type === propKey || variable.type === 'global-custom-variable' )
 		.map( ( [ key, { label, value } ] ) => ( {
 			key,
 			label,

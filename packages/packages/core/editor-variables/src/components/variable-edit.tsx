@@ -210,6 +210,7 @@ export const VariableEdit = ( { onClose, onGoBack, onSubmit, editId }: Props ) =
 					<FormField errorMsg={ valueFieldError } label={ __( 'Value', 'elementor' ) }>
 						<Typography variant="h5">
 							<ValueField
+								propKey={ variable.type }
 								value={ value }
 								onChange={ ( newValue ) => {
 									setValue( newValue );

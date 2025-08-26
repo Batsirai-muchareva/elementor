@@ -32,6 +32,7 @@ export const VariableCreation = ( { onGoBack, onClose }: Props ) => {
 
 	const [ value, setValue ] = useState( initialValue );
 	const [ label, setLabel ] = useState( '' );
+	const [ propTypeUtilKey, setPropTypeUtilKey ] = useState( propTypeUtil.key );
 	const [ errorMessage, setErrorMessage ] = useState( '' );
 	const [ valueFieldError, setValueFieldError ] = useState( '' );
 
@@ -53,7 +54,7 @@ export const VariableCreation = ( { onGoBack, onClose }: Props ) => {
 		createVariable( {
 			value,
 			label,
-			type: propTypeUtil.key,
+			type: propTypeUtilKey,
 		} )
 			.then( ( key ) => {
 				setVariable( key );
@@ -144,10 +145,11 @@ export const VariableCreation = ( { onGoBack, onClose }: Props ) => {
 					<Typography variant="h5">
 						<ValueField
 							value={ value }
-							onChange={ ( newValue ) => {
+							onChange={ ( newValue, propTypeKey ) => {
 								setValue( newValue );
 								setErrorMessage( '' );
 								setValueFieldError( '' );
+								setPropTypeUtilKey( propTypeKey );
 							} }
 							onValidationChange={ setValueFieldError }
 							propType={ propType }

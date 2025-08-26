@@ -26,7 +26,7 @@ export const VariableControl = () => {
 		return <DeletedVariable variable={ assignedVariable } propTypeKey={ propTypeKey } />;
 	}
 
-	const { isCompatible } = getVariableType( assignedVariable.type );
+	const { isCompatible } = getVariableType( propTypeKey );
 
 	if ( isCompatible && ! isCompatible( boundProp?.propType, assignedVariable ) ) {
 		return <MismatchVariable variable={ assignedVariable } />;

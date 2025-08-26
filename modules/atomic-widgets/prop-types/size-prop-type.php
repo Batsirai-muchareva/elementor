@@ -31,7 +31,7 @@ class Size_Prop_Type extends Object_Prop_Type {
 			}
 		}
 
-		$this->settings['available_units'] = $units;
+		$this->settings['available_units'] = Size_Constants::sort_units( $units );
 
 		return $this;
 	}
